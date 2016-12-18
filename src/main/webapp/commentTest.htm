@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>评论测试</title>
+    <script src="jquery-1.8.3.js"></script>
+    <script>
+        $(function () {
+             $.ajax({
+                type:"get",
+                dataType:"json",
+                url:"http://127.0.0.1:8080/comment/getAllComment",
+                success:function (data) {
+                    $("#comments").empty()
+                    $.each(data.commentList,function (commentIndex, comment) {
+
+                        $("#comments").append(
+                            "<li><div>"+"评论"+comment.id+"</div>" +
+                            "<div>"+"评论时间："+comment.date+"</div>" +
+                            "<div>"+"内容"+comment.comment+"<button onclick='updatecomment(this);' value='"+comment.comment+"' id='"+comment.id+"'>修改</button>"+
+                            "<button onclick='deletecomment(this);' value='"+comment.id+"'>删除</button>"+"</div></li>")
+                    })
+                }
+            })
+
+
+             $("#submitbutton").click(function () {
+                var product_id=$("#product_id").val()
+                var comment=$("#comment").val()
+                $.ajax({
+                    type:"post",
+                    dataType:"json",
+                    url:"http://127.0.0.1:8080/comment/addComment?product_id="+product_id+"&comment="+comment,
+                    success:function () {
+                       location.href="http://127.0.0.1:8080/commentTest.htm"
+                    }
+                })
+            })
+
+        })
+
+
+        function deletecomment(e) {
+            var commentid = e.value
+            $.ajax({
+                type: "post",
+                dataType: "json",
+                url: "http://127.0.0.1:8080/comment/deleteComment?id=" + commentid,
+                success: function () {
+                    location.href = "http://127.0.0.1:8080/commentTest.htm"
+                }
+            })
+        }
+
+        function updatecomment(e) {
+            var commentid=e.id
+            var commentvalue=e.value
+            $("#comment").val(commentvalue)
+            $("#submitbutton").val("修改")
+            $("#submitbutton").unbind("click")
+            $("#submitbutton").click(function () {
+                var newcomment=$("#comment").val()
+                $.ajax({
+                    type:"get",
+                    dataType:"json",
+                    url:"http://127.0.0.1:8080/comment/updateComment?id="+commentid+"&comment="+newcomment,
+                    success:function () {
+                        location.href="http://127.0.0.1:8080/commentTest.htm"
+                    }
+                })
+            })
+        }
+
+    </script>
+</head>
+<body>
+<h1 style="display:none" class="nav_hide">Title</h1>
+
+
+<p align="center" style="font-size: 50px">第一篇文档</p>
+<p align="center">
+发布日期：2016-12-08 17:52:22&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                                                     
+发布人：系统管理员
+</p>
+<div style="position:absolute;width: 1000px;height: 300px;top: 40%;left: 50%;margin-left: -500px;margin-top: -150px;border: 1px solid #999;padding: 30px">
+<div class=TRS_Editor>firstpage<br></div>
+</div>
+
+<div style="position: absolute;border: 1px solid #999;top: 600px;left: 24%;width: 500px;height: 300px">
+    评论区
+    <ul id="comments">
+    </ul>
+</div>
+
+<div  style="position: absolute;border: 1px solid #999;top: 600px;left: 53%;width: 500px;height: 150px">
+    <form style="padding-left: 20px" id="addComment">
+        <input type="hidden" id="product_id" value="a">
+        添加评论<br><textarea  id="comment" cols="55" rows="4"></textarea>
+        <input type="button" id="submitbutton" value="添加">
+    </form>
+</div>
+
+
+</body>
+</html>
