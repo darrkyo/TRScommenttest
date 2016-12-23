@@ -13,7 +13,7 @@ import java.util.Date;
  * Created by SONY on 2016/12/13.
  */
 @ControllerKey("comment")
-public class mycotroller extends Controller{
+public class commentCotroller extends Controller{
 
     @Autowired
     private commentService cmService;
@@ -23,7 +23,7 @@ public class mycotroller extends Controller{
      */
     public void addComment(){
         comment cm=new comment();
-        String product_id=getPara("product_id");
+        int product_id=getParaToInt("product_id");
         String comment=getPara("comment");
         System.err.println(product_id+":"+comment);
         String date= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date().getTime());
@@ -44,8 +44,9 @@ public class mycotroller extends Controller{
     /**
      * 获取全部
      */
-    public void getAllComment(){
-        renderJson("commentList",cmService.getAllComment());
+    public void getAllCommentById(){
+        int product_id=getParaToInt("product_id");
+        renderJson("commentList",cmService.getAllCommentById(product_id));
     }
 
     /**

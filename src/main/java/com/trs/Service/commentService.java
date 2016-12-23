@@ -34,8 +34,8 @@ public class commentService {
      * 获取所有
      * @return
      */
-    public List<comment> getAllComment(){
-        return cmdao.getComment();
+    public List<comment> getAllCommentById(int commentId ){
+        return cmdao.getCommentById(commentId);
     }
 
     /**

@@ -18,7 +18,7 @@ public class comment extends Pojo<comment> {
     //评论编号
     private Integer id;
     //产品id
-    private String product_id;
+    private Integer product_id;
     //产品评论
     private String comment;
     //评论日期
@@ -36,11 +36,11 @@ public class comment extends Pojo<comment> {
         this.id = id;
     }
 
-    public String getProduct_id() {
+    public Integer getProduct_id() {
         return product_id;
     }
 
-    public void setProduct_id(String product_id) {
+    public void setProduct_id(Integer product_id) {
         this.product_id = product_id;
     }
 
@@ -68,7 +68,7 @@ public class comment extends Pojo<comment> {
     public comment() {
     }
 
-    public comment(Integer id, String product_id, String comment, String date) {
+    public comment(Integer id, Integer product_id, String comment, String date) {
         this.id = id;
         this.product_id = product_id;
         this.comment = comment;

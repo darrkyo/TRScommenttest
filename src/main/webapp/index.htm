@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="renderer" content="webkit">
+<TITLE>产品概览</TITLE>
+<link rel="stylesheet" href="css/pintuer.css">
+<link rel="stylesheet" href="css/admin.css">
+    <script src="jquery-1.8.3.js"></script>
+<script src="js/pintuer.js"></script>
+    <script>
+        $(function () {
+            $("#editFieldset").hide();
+
+
+
+            $.ajax({
+                type:"get",
+                dataType:"json",
+                url:"http://127.0.0.1:8080/product/getAllProduct",
+                success:function (data) {
+                    $("#vo").empty();
+                    $.each(data.productList,function (productIndex,product) {
+                        $("table").append("<tr >" +
+                            "<td width='100%' align='left' style='min-width: 1000px;white-space:nowrap'>" +
+                            "<a href='http://127.0.0.1:8080/commentTest.htm?product_id="+product.product_id+"'>"+product.product_name+"</a>" +
+                            "<input type='hidden' value='"+product.product_id+"'>" +
+                            "<input type='hidden' value='"+product.product_name+"'>" +
+                            "<input type='hidden' value='"+product.product_text+"'>" +
+                            "<input type='button' value='修改' onclick='updateedit(this);' style='margin-left: 85%'>" +
+                            "<input type='button' value='删除' onclick='deleteProduct(this)'/>" +
+                            "</td>" +
+                            "</tr>")
+                    })
+                }
+            })
+        })
+
+        function openedit() {
+            $("#editFieldset").fadeIn("slow");
+        }
+
+        function closeedit(){
+            $("#editFieldset").fadeOut("slow");
+        }
+
+        function addedit() {
+            if($("#tittleEdit").val()==null||$("#tittleEdit").val()==""){
+                alert("标题不能为空")
+                return
+            }
+            if($("#textEdit").val()==null||$("#textEdit").val()==""){
+                alert("内容不能为空")
+                return
+            }
+            $.ajax({
+                type:"post",
+                dataType:"json",
+                url:"http://127.0.0.1:8080/product/addProduct?product_name="+$("#tittleEdit").val()+"&product_text="+$("#textEdit").val(),
+                success:function () {
+                    $("#editFieldset").fadeOut("slow",function () {
+                        location.href="http://127.0.0.1:8080/index.htm";
+                    });
+                }
+            })
+        }
+        
+        function updateedit(e) {
+            $("fieldset legend").html("修改")
+            $("#tittleEdit").val($(e).parent().children("input").eq(1).val())
+            $("#textEdit").val($(e).parent().children("input").eq(2).val())
+            $("#insertEdit").val("修改")
+            $("#insertEdit").removeAttr("onclick")
+            $("#insertEdit").bind("click",function () {
+                alert($("#tittleEdit").val())
+                alert($("#textEdit").val())
+                $.ajax({
+                    type:"post",
+                    dataType:"json",
+                    url:"http://127.0.0.1:8080/product/updateProduct?product_id="+$(e).parent().children("input").eq(0).val()+"&product_name="+$("#tittleEdit").val()+"&product_text="+$("#textEdit").val(),
+                    success:function () {
+                        $("#editFieldset").fadeOut("slow",function () {
+                            location.href="http://127.0.0.1:8080/index.htm";
+                        });
+                    }
+                })
+            })
+
+            $("#editFieldset").fadeIn("slow");
+        }
+        
+        function deleteProduct(e) {
+            $.ajax({
+                type:"get",
+                dataType:"json",
+                url:"http://127.0.0.1:8080/product/deleteProduct?product_id="+$(e).parent().children("input").eq(0).val(),
+                success:function () {
+                    location.href="http://127.0.0.1:8080/index.htm";
+                }
+            })
+        }
+
+    </script>
+</head>
+<body>
+<form method="post" action="" id="listform">
+  <div class="panel admin-panel">
+    <div class="panel-head" style="min-width: 1000px;white-space:nowrap"><strong class="icon-reorder"> 文档列表<a href="javaScript:openedit();"  style="margin-left: 88%">+添加文档</a></strong> </div>
+
+    <table class="table table-hover text-center">
+      <tr>
+        <th width="100" style="text-align:left; padding-left:20px;white-space:nowrap" >文档名字</th>
+
+      </tr>
+
+      <volist name="list" id="vo">
+         
+
+
+         
+      </volist>
+
+    </table>
+  </div>
+</form>
+
+
+<fieldset id="editFieldset" style="position: absolute;width:500px;height: 300px;left: 50%;top: 50%;margin-left: -250px;margin-top: -150px;border-width: 3px">
+    <legend>新增</legend>
+    <form>
+        <div>文章标题：<input id="tittleEdit" style="margin-left: 5px;padding-left: 10px;width: 375px"></div>
+        <div><span style='width: 20px;white-space:nowrap;top: -150px;position: relative'>文章内容：</span><textarea id="textEdit" cols="55" rows="8" style="margin-left: 5px;padding-left: 10px;margin-top: 20px;resize:none;padding-top: 5px"></textarea></div>
+        <div style="margin-top: 20px;margin-left: 70%"><input id="insertEdit" type="button" onclick="addedit();" value="新增"/> <input type="button" id="closeEdit" onclick="closeedit();" value="关闭"></div>
+    </form>
+</fieldset>
+</body>
+</html>

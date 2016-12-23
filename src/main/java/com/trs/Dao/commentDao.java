@@ -24,8 +24,8 @@ public class commentDao {
      * 获得全部评论
      * @return
      */
-    public List<comment> getComment(){
-        return Dao.findAll(comment.class);
+    public List<comment> getCommentById(int commentId ){
+        return Dao.findByColumn(comment.class,"product_id",commentId);
     }
 
     /**
